@@ -13,7 +13,7 @@ const Home: NextPage = () => {
       <Form<{ text?: string }>
         onSubmit={() => {}}
         render={({ values }) => (
-          <form>
+          <form className="py-2 px-5">
             <label
               htmlFor="text"
               className="block text-sm font-medium text-gray-700"
