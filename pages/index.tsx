@@ -1,10 +1,21 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Form, Field } from "react-final-form";
 import QRCode from "qrcode.react";
+import { TwitterPicker } from "react-color";
 
 const Home: NextPage = () => {
+  const [bgColor, setBgColor] = useState("#ffffff");
+  const [fgColor, setFgColor] = useState("#000000");
+  useEffect(() => {
+    setBgColor(localStorage.getItem("bgColor") || "#ffffff");
+    setFgColor(localStorage.getItem("fgColor") || "#000000");
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("bgColor", bgColor);
+    localStorage.setItem("fgColor", fgColor);
+  }, [bgColor, fgColor]);
   const onDownload = useCallback(() => {
     var link = document.createElement("a");
     link.download = "qrcode.png";
@@ -31,17 +42,39 @@ const Home: NextPage = () => {
             <div className="mt-1">
               <Field
                 component="textarea"
-                rows={4}
+                rows={3}
                 name="text"
                 id="text"
                 className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                 defaultValue=""
               />
             </div>
+            <div className="mt-1 flex justify-center">
+              <label className="block text-sm font-medium text-gray-700">
+                Background Color
+                <TwitterPicker
+                  color={bgColor}
+                  className="mt-3"
+                  onChangeComplete={({ hex }) => setBgColor(hex)}
+                />
+              </label>
+            </div>
+            <div className="mt-1 flex justify-center">
+              <label className="block text-sm font-medium text-gray-700">
+                Foreground Color
+                <TwitterPicker
+                  color={fgColor}
+                  className="mt-3"
+                  onChangeComplete={({ hex }) => setFgColor(hex)}
+                />
+              </label>
+            </div>
             <QRCode
               id="code"
               className="mt-2 mx-auto"
               size={256}
+              bgColor={bgColor}
+              fgColor={fgColor}
               level="H"
               renderAs="canvas"
               value={values.text || ""}
